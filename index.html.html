@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tamayo_DeJaVu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B1A1A;
+    --deep-red: #5C0A0A;
+    --blood: #3D0000;
+    --gold: #E8B86D;
+    --amber: #D4920A;
+    --cream: #F5E6C8;
+    --muted: #C4A882;
+    --card-bg: rgba(80, 15, 15, 0.55);
+    --card-border: rgba(232, 184, 109, 0.18);
+    --glow: rgba(232, 184, 109, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    min-height: 100%;
+    background: #1a0404;
+    font-family: 'Rajdhani', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bg::before {
+    content: '';
+    position: absolute;
+    inset: -60%;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, #7a1010 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, #5c0a0a 0%, transparent 60%),
+      radial-gradient(ellipse 100% 50% at 50% 50%, #2d0505 0%, transparent 70%);
+    animation: bgShift 12s ease-in-out infinite alternate;
+  }
+  .bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,0.012) 60px,
+      rgba(255,255,255,0.012) 61px
+    );
+  }
+  @keyframes bgShift {
+    0%   { transform: translate(0,0) rotate(0deg); }
+    50%  { transform: translate(-4%, 3%) rotate(4deg); }
+    100% { transform: translate(4%, -3%) rotate(-4deg); }
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    padding: 36px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.8s ease both;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .top-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(60,10,10,0.85);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 18px;
+    box-shadow: 0 0 12px var(--glow);
+    animation: spin 20s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .avatar-wrap {
+    margin-top: 8px;
+    margin-bottom: 18px;
+  }
+  .avatar-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, var(--gold), var(--crimson), var(--amber));
+    box-shadow: 0 0 28px rgba(232,184,109,0.35), 0 0 60px rgba(139,26,26,0.5);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 28px rgba(232,184,109,0.35), 0 0 60px rgba(139,26,26,0.5); }
+    50%      { box-shadow: 0 0 40px rgba(232,184,109,0.6), 0 0 80px rgba(139,26,26,0.7); }
+  }
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8b86d 0%, #8B1A1A 50%, #3d0000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--cream);
+    letter-spacing: 2px;
+  }
+
+  .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(232,184,109,0.5), 0 2px 8px rgba(0,0,0,0.8);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .bio {
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+
+  /* Social icons row */
+  .socials {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .social-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    text-decoration: none;
+    color: var(--gold);
+  }
+  .social-btn:hover {
+    background: rgba(232,184,109,0.15);
+    border-color: var(--gold);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 24px rgba(232,184,109,0.25);
+    color: var(--cream);
+  }
+  .social-btn svg { width: 19px; height: 19px; fill: currentColor; }
+
+  /* Links */
+  .links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .link-card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.28s ease;
+    text-decoration: none;
+    position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: slideUp 0.6s ease both;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .link-card:nth-child(1) { animation-delay: 0.08s; }
+  .link-card:nth-child(2) { animation-delay: 0.15s; }
+  .link-card:nth-child(3) { animation-delay: 0.22s; }
+  .link-card:nth-child(4) { animation-delay: 0.29s; }
+  .link-card:nth-child(5) { animation-delay: 0.36s; }
+  .link-card:nth-child(6) { animation-delay: 0.43s; }
+  .link-card:nth-child(7) { animation-delay: 0.50s; }
+  .link-card:nth-child(8) { animation-delay: 0.57s; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .link-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(232,184,109,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .link-card:hover::before { opacity: 1; }
+
+  .link-card:hover {
+    border-color: rgba(232,184,109,0.4);
+    transform: translateX(4px) scale(1.01);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(232,184,109,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .link-card.featured { border-radius: 18px; }
+
+  .featured-img-placeholder {
+    width: 100%;
+    height: 155px;
+    background: linear-gradient(135deg, #3d0505 0%, #8B2020 40%, #3d1010 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px 16px 0 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: rgba(232,184,109,0.28);
+    letter-spacing: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .featured-img-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.018) 20px, rgba(255,255,255,0.018) 21px);
+  }
+
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+  }
+  .link-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .link-thumb svg { width: 22px; height: 22px; }
+
+  .link-text { flex: 1; }
+  .link-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+  .link-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .link-more {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+  .link-more span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: block;
+  }
+
+  .footer {
+    margin-top: 36px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(196,168,130,0.3);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .footer span { color: rgba(232,184,109,0.45); }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grain"></div>
+
+<div class="card">
+  <div class="top-icon">✳</div>
+
+  <div class="avatar-wrap">
+    <div class="avatar-ring">
+      <div class="avatar">TDV</div>
+    </div>
+  </div>
+
+  <div class="name">Tamayo_DeJaVu</div>
+  <div class="bio">I am Tamayo.</div>
+
+  <!-- Social icons -->
+  <div class="socials">
+    <!-- YouTube -->
+    <a href="https://www.youtube.com/@TamayoDJV" target="_blank" class="social-btn" title="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.6 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.6-5.8zM9.8 15.5V8.5l6.2 3.5-6.2 3.5z"/></svg>
+    </a>
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/tamayo_djv" target="_blank" class="social-btn" title="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.2-4.8-1.7-5-5C2.1 15.6 2 15.3 2 12c0-3.2 0-3.6.1-4.8.2-3.3 1.7-4.8 5-5 1.2-.1 1.6-.1 4.9-.1zm0 2.2c-3.2 0-3.5 0-4.8.1-2.2.1-3.2 1.1-3.3 3.3C3.8 8.9 3.8 9.1 3.8 12c0 2.9 0 3.1.1 4.3.1 2.2 1.1 3.2 3.3 3.3 1.2.1 1.5.1 4.8.1 3.2 0 3.5 0 4.8-.1 2.2-.1 3.2-1.1 3.3-3.3.1-1.2.1-1.5.1-4.3 0-2.9 0-3.1-.1-4.3-.1-2.2-1.1-3.2-3.3-3.3-1.3-.1-1.6-.1-4.8-.1zM12 7a5 5 0 1 1 0 10A5 5 0 0 1 12 7zm0 2.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6zm5.2-3.9a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>
+    </a>
+    <!-- Twitch -->
+    <a href="https://www.twitch.tv/tamayo_djv" target="_blank" class="social-btn" title="Twitch">
+      <svg viewBox="0 0 24 24"><path d="M2.149 0L.537 4.119v16.836h5.731V24h3.224l3.045-3.045h4.657l6.269-6.269V0H2.149zm19.164 13.612l-3.582 3.582H12.79l-3.045 3.045v-3.045H5.013V2.239h16.3v11.373zm-3.582-7.343v5.969h-2.239V6.269h2.239zm-5.97 0v5.969H9.522V6.269h2.239z"/></svg>
+    </a>
+    <!-- SoundCloud -->
+    <a href="https://soundcloud.com/tamayo_dejavu" target="_blank" class="social-btn" title="SoundCloud">
+      <svg viewBox="0 0 24 24"><path d="M1.175 12.225c-.017 0-.034.002-.05.003V12.2c0-.68.554-1.232 1.237-1.232.324 0 .618.125.838.329.185-.876.95-1.534 1.875-1.534.21 0 .413.035.601.098.145-.563.653-.979 1.26-.979.36 0 .686.143.927.375.248-.168.545-.267.865-.267.86 0 1.555.695 1.555 1.554 0 .102-.01.202-.029.299h.041c.86 0 1.558.697 1.558 1.558 0 .86-.697 1.558-1.558 1.558H1.175c-.647 0-1.173-.526-1.173-1.175s.526-1.174 1.173-1.174zM24 11.374c0 1.458-1.183 2.641-2.641 2.641H12.7a2.641 2.641 0 0 1 0-5.282c.022 0 .044 0 .065.002C13.203 7.2 14.527 6 16.16 6c1.37 0 2.554.795 3.13 1.954.224-.065.46-.1.706-.1 1.458 0 2.64 1.183 2.64 2.641 0 .293-.05.575-.14.838.316.28.504.686.504 1.141z"/></svg>
+    </a>
+    <!-- Spotify -->
+    <a href="https://open.spotify.com/artist/3OsODNUHYLGoJeRMUAMV5R" target="_blank" class="social-btn" title="Spotify">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.7 0 12 0zm5.5 17.3c-.2.3-.6.4-1 .2-2.7-1.6-6-2-10-.1-.4.1-.8-.1-.9-.5-.1-.4.1-.8.5-.9 4.3-.9 8-.5 11 .2.4.2.5.7.4 1.1zm1.5-3.3c-.3.4-.8.5-1.2.2-3-1.9-7.7-2.4-11.3-1.3-.5.1-.9-.2-1-.6-.1-.5.2-.9.6-1 4.1-1.2 9.2-.6 12.7 1.5.4.2.5.8.2 1.2zm.1-3.4c-3.6-2.1-9.6-2.3-13-1.3-.6.2-1.1-.1-1.3-.7-.2-.6.1-1.1.7-1.3 4-.1 10.5.1 14.6 1.5.5.2.8.8.6 1.4-.2.5-.8.8-1.4.6l-.2-.2z"/></svg>
+    </a>
+    <!-- Deezer -->
+    <a href="https://www.deezer.com/en/artist/392096091" target="_blank" class="social-btn" title="Deezer">
+      <svg viewBox="0 0 24 24"><path d="M18.81 4.16v3.03H24V4.16h-5.19zm-6.48 0v3.03h5.19V4.16H12.33zM5.85 4.16v3.03h5.19V4.16H5.85zM.66 10.62v3.03h5.19v-3.03H.66zm5.19 0v3.03h5.19v-3.03H5.85zm6.48 0v3.03h5.19v-3.03H12.33zm6.48 0v3.03H24v-3.03h-5.19zM.66 17.08v3.03h5.19v-3.03H.66zm5.19 0v3.03h5.19v-3.03H5.85zm6.48 0v3.03h5.19v-3.03H12.33zm6.48 0v3.03H24v-3.03h-5.19z"/></svg>
+    </a>
+  </div>
+
+  <!-- Link cards -->
+  <div class="links">
+
+    <!-- YouTube featured -->
+    <a href="https://www.youtube.com/@TamayoDJV" target="_blank" class="link-card featured">
+      <div class="featured-img-placeholder">TAMAYO</div>
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #ff0000, #8B0000);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.6 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.6-5.8zM9.8 15.5V8.5l6.2 3.5-6.2 3.5z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">YouTube</div>
+          <div class="link-sub">@TamayoDJV</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/tamayo_djv" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.2-4.8-1.7-5-5C2.1 15.6 2 15.3 2 12c0-3.2 0-3.6.1-4.8.2-3.3 1.7-4.8 5-5 1.2-.1 1.6-.1 4.9-.1zm0 2.2c-3.2 0-3.5 0-4.8.1-2.2.1-3.2 1.1-3.3 3.3C3.8 8.9 3.8 9.1 3.8 12c0 2.9 0 3.1.1 4.3.1 2.2 1.1 3.2 3.3 3.3 1.2.1 1.5.1 4.8.1 3.2 0 3.5 0 4.8-.1 2.2-.1 3.2-1.1 3.3-3.3.1-1.2.1-1.5.1-4.3 0-2.9 0-3.1-.1-4.3-.1-2.2-1.1-3.2-3.3-3.3-1.3-.1-1.6-.1-4.8-.1zM12 7a5 5 0 1 1 0 10A5 5 0 0 1 12 7zm0 2.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6zm5.2-3.9a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">Instagram</div>
+          <div class="link-sub">@tamayo_djv</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- Spotify -->
+    <a href="https://open.spotify.com/artist/3OsODNUHYLGoJeRMUAMV5R" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: #121212;">
+          <svg viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.7 0 12 0zm5.5 17.3c-.2.3-.6.4-1 .2-2.7-1.6-6-2-10-.1-.4.1-.8-.1-.9-.5-.1-.4.1-.8.5-.9 4.3-.9 8-.5 11 .2.4.2.5.7.4 1.1zm1.5-3.3c-.3.4-.8.5-1.2.2-3-1.9-7.7-2.4-11.3-1.3-.5.1-.9-.2-1-.6-.1-.5.2-.9.6-1 4.1-1.2 9.2-.6 12.7 1.5.4.2.5.8.2 1.2zm.1-3.4c-3.6-2.1-9.6-2.3-13-1.3-.6.2-1.1-.1-1.3-.7-.2-.6.1-1.1.7-1.3 4-.1 10.5.1 14.6 1.5.5.2.8.8.6 1.4-.2.5-.8.8-1.4.6l-.2-.2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">Spotify</div>
+          <div class="link-sub">Spotify · Tamayo</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- Twitch -->
+    <a href="https://www.twitch.tv/tamayo_djv" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #6441a5, #2a0845);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M2.149 0L.537 4.119v16.836h5.731V24h3.224l3.045-3.045h4.657l6.269-6.269V0H2.149zm19.164 13.612l-3.582 3.582H12.79l-3.045 3.045v-3.045H5.013V2.239h16.3v11.373zm-3.582-7.343v5.969h-2.239V6.269h2.239zm-5.97 0v5.969H9.522V6.269h2.239z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">Twitch</div>
+          <div class="link-sub">tamayo_djv</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- SoundCloud -->
+    <a href="https://soundcloud.com/tamayo_dejavu" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #ff4500, #ff7700);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M1.175 12.225c-.017 0-.034.002-.05.003V12.2c0-.68.554-1.232 1.237-1.232.324 0 .618.125.838.329.185-.876.95-1.534 1.875-1.534.21 0 .413.035.601.098.145-.563.653-.979 1.26-.979.36 0 .686.143.927.375.248-.168.545-.267.865-.267.86 0 1.555.695 1.555 1.554 0 .102-.01.202-.029.299h.041c.86 0 1.558.697 1.558 1.558 0 .86-.697 1.558-1.558 1.558H1.175c-.647 0-1.173-.526-1.173-1.175s.526-1.174 1.173-1.174zM24 11.374c0 1.458-1.183 2.641-2.641 2.641H12.7a2.641 2.641 0 0 1 0-5.282c.022 0 .044 0 .065.002C13.203 7.2 14.527 6 16.16 6c1.37 0 2.554.795 3.13 1.954.224-.065.46-.1.706-.1 1.458 0 2.64 1.183 2.64 2.641 0 .293-.05.575-.14.838.316.28.504.686.504 1.141z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">SoundCloud</div>
+          <div class="link-sub">tamayo_dejavu</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- Deezer -->
+    <a href="https://www.deezer.com/en/artist/392096091" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #a238ff, #00c7f2);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M18.81 4.16v3.03H24V4.16h-5.19zm-6.48 0v3.03h5.19V4.16H12.33zM5.85 4.16v3.03h5.19V4.16H5.85zM.66 10.62v3.03h5.19v-3.03H.66zm5.19 0v3.03h5.19v-3.03H5.85zm6.48 0v3.03h5.19v-3.03H12.33zm6.48 0v3.03H24v-3.03h-5.19zM.66 17.08v3.03h5.19v-3.03H.66zm5.19 0v3.03h5.19v-3.03H5.85zm6.48 0v3.03h5.19v-3.03H12.33zm6.48 0v3.03H24v-3.03h-5.19z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">Deezer</div>
+          <div class="link-sub">Tamayo on Deezer</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- YouTube Music -->
+    <a href="https://music.youtube.com/channel/UC9RmScExgiWDCcdLzFC7FEQ" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #ff0000, #282828);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">YouTube Music</div>
+          <div class="link-sub">Tamayo · Artist channel</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+    <!-- Website -->
+    <a href="https://00b5d.weblium.site/" target="_blank" class="link-card">
+      <div class="link-row">
+        <div class="link-thumb" style="background: linear-gradient(135deg, #8B1A1A, #E8B86D);">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </div>
+        <div class="link-text">
+          <div class="link-title">Офіційний сайт</div>
+          <div class="link-sub">tamayo-dejavu.site</div>
+        </div>
+        <div class="link-more"><span></span><span></span><span></span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer">TAMAYO · <span>✳ DEJAVU</span> · 2026</div>
+</div>
+</body>
+</html>
